@@ -21,8 +21,35 @@ A camada Gold é armazenada diretamente no banco de dados, sem necessidade de sa
 ### Desenvolvimento
 
 1. Instalar o **pre-commit**:
+```bash
+pip install pre-commit
+pre-commit install
+```
 
-   ```bash
-   pip install pre-commit
-   pre-commit install
-   ```
+2. Instancie o ambiente:
+```sh
+make up
+```
+
+2. Pause o ambiente:
+```sh
+make stop
+```
+
+3. Mate o ambiente:
+```sh
+make down
+```
+
+4. Build o ambiente:
+```sh
+make build
+```
+
+## Ambiente de desenvolvimento
+
+Acesse o ambiente de desenvolvimento
+```sh
+make sh
+su airflow
+```
