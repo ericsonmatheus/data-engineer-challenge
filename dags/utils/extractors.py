@@ -86,19 +86,19 @@ def extract_employees_from_api(execution_date: str) -> None:
         employees_df = pd.DataFrame(all_employees)
 
         # Create the directory if it doesn't exist
-        output_dir = f"{DATA_PATH}/raw_data/employee/{execution_date}"
+        output_dir = f"{DATA_PATH}/raw_data/employees/{execution_date}"
         os.makedirs(output_dir, exist_ok=True)
 
         output_file_path = f"{output_dir}/employees_data.parquet"
         employees_df.to_parquet(output_file_path, index=False)
 
         logger.info(
-            f"Successfully extracted {len(employees_df)} employee records. Data saved to: {output_file_path}"
+            f"Successfully extracted {len(employees_df)} employees records. Data saved to: {output_file_path}"
         )
 
     except Exception as e:
         logger.error(
-            f"An error occurred while extracting employee data from the API: {str(e)}"
+            f"An error occurred while extracting employees data from the API: {str(e)}"
         )
         raise
 
