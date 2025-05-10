@@ -8,6 +8,11 @@ from utils.extractors import (
     extract_employees_from_api,
     extract_sales_from_postgres,
 )
+from utils.sanitizers import (
+    sanitize_categories_data,
+    sanitize_employees_data,
+    sanitize_sales_data,
+)
 
 sales_engine = PostgresHook(postgres_conn_id="db_sales").get_sqlalchemy_engine()
 
@@ -58,4 +63,33 @@ with DAG(
         },
     )
 
-    ([extract_sales_task, extract_employees_task, extract_categories_task])
+    sanitize_sales_task = PythonOperator(
+        task_id="sanitize_sales_data",
+        python_callable=sanitize_sales_data,
+        op_kwargs={
+            "execution_date": "{{ ds }}",
+        },
+    )
+
+    sanitize_employees_task = PythonOperator(
+        task_id="sanitize_employees_data",
+        python_callable=sanitize_employees_data,
+        op_kwargs={
+            "execution_date": "{{ ds }}",
+        },
+    )
+
+    sanitize_categories_task = PythonOperator(
+        task_id="sanitize_categories_data",
+        python_callable=sanitize_categories_data,
+        op_kwargs={
+            "execution_date": "{{ ds }}",
+        },
+    )
+
+    (
+        [extract_sales_task, extract_employees_task, extract_categories_task]
+        >> sanitize_categories_task
+        >> sanitize_employees_task
+        >> sanitize_sales_task
+    )
