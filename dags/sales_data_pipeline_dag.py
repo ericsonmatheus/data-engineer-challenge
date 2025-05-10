@@ -1,12 +1,12 @@
 from datetime import datetime, timedelta
 
 from airflow import DAG
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.python import PythonOperator
-
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from utils.extractors import (
-    extract_sales_from_postgres,
+    extract_categories_from_parquet,
     extract_employees_from_api,
+    extract_sales_from_postgres,
 )
 
 sales_engine = PostgresHook(postgres_conn_id="db_sales").get_sqlalchemy_engine()
@@ -30,7 +30,7 @@ with DAG(
     start_date=datetime(2025, 5, 9),
     catchup=False,
     tags=["sales", "data-engineering"],
-    max_active_runs=1, # Ensures only one instance of this DAG runs at any given time
+    max_active_runs=1,  # Ensures only one instance of this DAG runs at any given time
 ) as dag:
 
     extract_sales_task = PythonOperator(
@@ -50,6 +50,12 @@ with DAG(
         },
     )
 
-    (
-        [extract_sales_task, extract_employees_task]
+    extract_categories_task = PythonOperator(
+        task_id="extract_categories_data",
+        python_callable=extract_categories_from_parquet,
+        op_kwargs={
+            "execution_date": "{{ ds }}",
+        },
     )
+
+    ([extract_sales_task, extract_employees_task, extract_categories_task])
