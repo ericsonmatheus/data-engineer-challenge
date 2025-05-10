@@ -1,1 +1,2 @@
 apache-airflow[postgres]
+pyarrow==19.0.0
