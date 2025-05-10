@@ -90,20 +90,35 @@ A DAG segue o seguinte fluxo de execução:
 
 Obs.: Todas as tarefas salvam os dados extraídos no formato Parquet dentro da pasta `raw_data` no sistema de arquivos local do container.
 
+2. **Tratamento de Dados**
+   - `sanitize_categories_task`: Feito tratamento dos dados e salvo na pasta e staging
+   - `sanitize_employees_task`: Feito tratamento dos dados e salvo na pasta e staging
+   - `sanitize_sales_task`: Este necessariamente irá aguardar o tratamento das categorias e funcionários pois necessita dos dados tratados
+
 ## Estrutura de Diretórios de Saída
 
 Os dados extraídos são salvos na seguinte estrutura:
 
 ```
 data/
-└── raw_data/
+├── raw_data/
+│    ├── sales/
+│    │   └── YYYY-MM-DD/
+│    │       └── sales_data.parquet
+│    ├── employees/
+│    │   └── YYYY-MM-DD/
+│    │       └── employees_data.parquet
+│    └── categories/
+│        └── YYYY-MM-DD/
+│            └── categories_data.parquet
+└── staging_data/
     ├── sales/
     │   └── YYYY-MM-DD/
-    │       └── sales_data.parquet
+    │       └── sales_sanitized.parquet
     ├── employees/
     │   └── YYYY-MM-DD/
-    │       └── employees_data.parquet
+    │       └── employees_sanitized.parquet
     └── categories/
         └── YYYY-MM-DD/
-            └── categories_data.parquet
+            └── categories_sanitized.parquet
 ```
