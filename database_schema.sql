@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.categories
     id bigint NOT NULL,
     category_name character varying NOT NULL,
     _created timestamp without time zone NOT NULL DEFAULT now(),
-    _updated timestamp without time zone NOT NULL DEFAULT now() ON UPDATE now(),
+    _updated timestamp without time zone NOT NULL DEFAULT now(),
     PRIMARY KEY (id)
 )
 TABLESPACE pg_default;
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS public.employees
     id integer NOT NULL,
     name character varying NOT NULL,
     _created timestamp without time zone NOT NULL DEFAULT now(),
-    _updated timestamp without time zone NOT NULL DEFAULT now() ON UPDATE now(),
+    _updated timestamp without time zone NOT NULL DEFAULT now(),
     PRIMARY KEY (id)
 )
 TABLESPACE pg_default;
