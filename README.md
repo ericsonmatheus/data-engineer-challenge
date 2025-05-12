@@ -37,6 +37,9 @@ pip install pre-commit
 pre-commit install
 ```
 
+3. Copie o arquivo **.env.examplo** para o arquivo **.env**
+ - Adicione as variáveis de ambiente no arquivo **.env**:
+
 3. Inicie os serviços com Makefile:
 ```sh
 make up
@@ -94,6 +97,11 @@ Obs.: Todas as tarefas salvam os dados extraídos no formato Parquet dentro da p
    - `sanitize_categories_task`: Feito tratamento dos dados e salvo na pasta e staging
    - `sanitize_employees_task`: Feito tratamento dos dados e salvo na pasta e staging
    - `sanitize_sales_task`: Este necessariamente irá aguardar o tratamento das categorias e funcionários pois necessita dos dados tratados
+
+3. **Carregamento de Dados**
+   - `load_categories_task`: Carrega os dados de categorias tratados no banco de dados, prontos para analises
+   - `load_employees_task`: Carrega os dados de funcionários tratados no banco de dados, prontos para analises
+   - `load_sales_task`: Carrega os dados de vendas tratados no banco de dados, prontos para analises
 
 ## Estrutura de Diretórios de Saída
 
