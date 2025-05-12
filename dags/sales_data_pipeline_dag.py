@@ -8,12 +8,14 @@ from utils.extractors import (
     extract_employees_from_api,
     extract_sales_from_postgres,
 )
+from utils.loaders import load_categories_data, load_employees_data, load_sales_data
 from utils.sanitizers import (
     sanitize_categories_data,
     sanitize_employees_data,
     sanitize_sales_data,
 )
 
+junior_engine = PostgresHook(postgres_conn_id="db_junior").get_sqlalchemy_engine()
 sales_engine = PostgresHook(postgres_conn_id="db_sales").get_sqlalchemy_engine()
 
 default_args = {
@@ -42,7 +44,7 @@ with DAG(
         task_id="extract_sales_data",
         python_callable=extract_sales_from_postgres,
         op_kwargs={
-            "engine": sales_engine,
+            "engine": junior_engine,
             "execution_date": "{{ ds }}",
         },
     )
@@ -87,9 +89,39 @@ with DAG(
         },
     )
 
+    load_sales_task = PythonOperator(
+        task_id="load_sales_data",
+        python_callable=load_sales_data,
+        op_kwargs={
+            "engine": sales_engine,
+            "execution_date": "{{ ds }}",
+        },
+    )
+
+    load_employees_task = PythonOperator(
+        task_id="load_employees_data",
+        python_callable=load_employees_data,
+        op_kwargs={
+            "engine": sales_engine,
+            "execution_date": "{{ ds }}",
+        },
+    )
+
+    load_categories_task = PythonOperator(
+        task_id="load_categories_data",
+        python_callable=load_categories_data,
+        op_kwargs={
+            "engine": sales_engine,
+            "execution_date": "{{ ds }}",
+        },
+    )
+
     (
         [extract_sales_task, extract_employees_task, extract_categories_task]
         >> sanitize_categories_task
         >> sanitize_employees_task
         >> sanitize_sales_task
+        >> load_categories_task
+        >> load_employees_task
+        >> load_sales_task
     )
